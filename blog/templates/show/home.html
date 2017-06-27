@@ -1,0 +1,134 @@
+{% extends 'search/search.html' %}
+{% load pagination_tags %}
+{% block header %}
+<title>home</title>
+<script type='text/javascript' charset='utf-8'>
+
+var category_dic = {"等你回答":".left_title_answer", "最热":".left_title_hot", "最新":".left_title_new"}
+
+$(function(){
+    $(".left_title li a").removeClass("select_answer select_new select_hot");
+    if("{{ category }}" == "等你回答"){
+        $(category_dic["等你回答"]).addClass("select_answer"); 
+    }
+    else if("{{ category }}" == "最热"){
+        $(category_dic["最热"]).addClass("select_hot");                   
+    }
+    else if("{{ category }}" == "最新"){
+        $(category_dic["最新"]).addClass("select_new");
+    }
+    else{
+        $(category_dic["最新"]).addClass("select_new");
+    }
+
+});
+</script>
+{% endblock %}
+
+{% block content_body %}
+    <div class="web_body">
+        
+		    <div class="web_body_left">
+                <div class="left_title">
+                    <li><a href="/home/最新/" class="left_title_new" >最新</a></li>
+                    <li><a href="/home/最热/" class="left_title_hot ">最热</a></li>
+					<li><a href="/ask/new/" class="left_title_ask">我来提问</a></li>
+					<li><a href="/home/等你回答/" class="left_title_answer">等你回答</a></li>
+				</div>
+
+                {% ifequal category "等你回答" %}
+				<div class="left_body">
+				    <font class="paginate1">{% autopaginate result 15 %}</font>
+					{% for problem in result %}
+					<div class="left_body_answer">
+                        <div class="answer_browse">
+                            <div class="answer_browse_half"><p>0</p>关注</div>
+							<div class="answer_browse_half"><p>{{problem.question_answer_num}}</p>回答</div>
+							<div class="answer_browse_half answer_browse_backgrand"><p>{{problem.browse}}</p>浏览</div>
+                        </div>
+                        <div class="answer_detail">
+                            <div class="answer_detail_above">
+                                {{ problem.questioner}} {{problem.question_time|date:"Y-m-d h:m"}}提问
+                                <div class="answer_detail_classification">{{ problem.question_classification}}</div>
+                            </div>
+                            <div class="answer_detail_below">
+                                <a href="{% url 'question_detail' pk=problem.pk %}">{{problem.question_title}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <p>.</p>
+                    {% endfor %}
+                    <font class="paginate1">{% paginate %}</font>
+                </div>
+                {% endifequal %}
+
+                <div class="left_body">
+                    <font class="paginate1">{% autopaginate result 15 %}</font>
+                    {% for article in result %}
+                    <div class="left_body_article">
+                        <div class="article_browse">
+                            <div class="article_browse_half"><p>{{ article.collect}}</p>收藏</div>
+                            <div class="article_browse_half"><p>{{ article.browse}}</p>浏览</div>
+                        </div>
+                        <div class="article_detail">
+                            <div class="article_detail_caption">
+                                <div class="article_detail_caption_left">
+                                    <a href="{% url 'blog_detail' pk=article.pk %}">{{ article.caption}}</a>
+                                </div>
+                                <div class="article_detail_caption_right">
+                                    <div class="article_detail_caption_classification">{{ article.classification}}</div>
+                                </div>
+                            </div>
+                            <div class="article_detail_content">
+                                {% if article.introduction%}
+                                    {{article.introduction|safe|striptags|truncatechars:100}}
+                                {% else %}
+                                    {{article.content|safe|striptags|truncatechars:100}}
+                                {% endif %}
+                            </div>
+                            <div class="article_detail_author">
+                                <font class="author_font">{{ article.author}}  </font>发布于{{article.publish_time|date:"Y-m-d h:m"}}
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <p>.</p>
+                    {% endfor %}
+                    <div class="paginate_style">
+                        <div class="paginate">
+                            <font class="paginate1">{% paginate %}</font>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+		
+        <div class="web_body_right">
+            <div class="right_menu_introduce">
+                <div class="right_menu_introduce_detail" >
+                    <p>GeekerHouse是一个专注于解决编程问题，提高开发技能的社区</p>
+                    <p>你可以在这里写博客，定制自己的小站，上传或下载感兴趣的教程</p>
+                    <p>你可以在这里发出提问，或给予解答</p>
+                    <p>你可以在这里关注技术大牛，结交志趣相投的朋友</p>
+                    <p>欢迎光临GeekerHouse！</p>
+                </div>
+            </div>
+            <div class="right_menu_rightblog">
+                <li><img src="{{ STATIC_URL }}images/pen.png"><a href="/post/new/">我要发帖</a></li>
+            </div>
+            <div class="right_menu_advertisement">
+                <img src="{{ STATIC_URL }}images/advertisement_1.jpg" alt="" class="img-responsive">
+            </div>
+            <div class="right_menu_advertisement">
+                <img src="{{ STATIC_URL }}images/advertisement_2.jpg" alt="" class="img-responsive">
+            </div>
+            <div class="right_menu_advertisement">
+                <img src="{{ STATIC_URL }}images/advertisement_3.jpg" alt="" class="img-responsive">
+            </div>
+        </div>
+    </div>
+<div class="clear"></div>
+
+{% endblock %}
+

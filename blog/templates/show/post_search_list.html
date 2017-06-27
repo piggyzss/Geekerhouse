@@ -1,0 +1,13 @@
+{% extends 'show/base.html' %}
+{% block content_body %}
+<div id="searchbox">
+    <form action="{% url 'team.views.full_search' %}" method="get">
+        <div class="content">
+            <label>
+                <input type="text" class="textfield searchtip" name="q" size="24" value="">
+            </label>
+            <input type="submit" class="button" value="">
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'search/search.html' %}
+{% load staticfiles %}
+{% block header %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/textareas.js"></script>
+{% endblock %}
+{% block content_body %}
+    <div class="ask_caption">
+        <div class="ask_caption_kernel">
+            <div class="ask_main">
+                <div class="ask_main_above">
+                    <div class="ask_title">
+                        <div class="ask_logo">问</div>
+                        <div class="ask_word">{{question.question_title}}</div>
+                        <div class="article_operation">
+                            {% if current_user == question.questioner%}
+                            <li class="glyphicon glyphicon-edit"><a href="{% url 'ask_edit' pk=question.pk %}">编辑</a></li>
+                            <li class="glyphicon glyphicon-trash"><a href="{% url 'ask_remove' pk=question.pk %}" id="delete_question">删除</a></li>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>
+
+
+                </div>
+                <div class="ask_main_below">
+                    <div class="ask_classification">
+                        <a href="/Classification_list/{{question.question_classification}}/" >{{question.question_classification}}</a>
+                    </div>
+                    <div class="ask_time_info">
+                        <font class="ask_time1">{{question.questioner}}</font><font class="ask_time2"> &nbsp;{{question.question_time|date:"Y-m-d"}}
+                        &nbsp; 提问</font>
+                    </div>
+
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <div class="ask_info">
+                <div class="ask_collect_info"> <div class="ask_browse_zone">关注</div><div class="ask_browse_num">0&nbsp; 关注</div></div>
+                <div class="ask_browse_info"> <div class="ask_browse_zone">浏览</div><div class="ask_browse_num">{{question.browse}}&nbsp; 浏览</div></div>
+            </div>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+    <div class="ask_content">
+        <div class="ask_content_left">
+            <div class="ask_content_details">
+                <!--<div class="ask_content_details_left">-->
+                <!--</div>-->
+                <div class="qustion_describe">问题描述
+                    <div class="qustion_describe_unfold_fold" id="unfold_fold">
+
+                        <li class="glyphicon glyphicon-chevron-up" id="unfold_fold_logo"><font id="unfold_fold_text">收起</font></li>
+                    </div>
+                </div>
+                <div class="ask_content_details_right" id="question_detail">{{ question.question|safe }}</div>
+            </div>
+            <div style="clear:both;"></div>
+            <div class="answer_content">
+                <div class="answer_num">{{question.question_answer_num}}个回答</div>
+                <button id="attention"></button>
+                {% if answers %}
+                    {% for answer in answers %}
+                        <div class="every_answer">
+
+                            <div class="every_answer_left">
+                                <div class="ask_content_usefulness" style="display: block;" >
+
+                                    <button class="ask_content_useful" type="button" title="支持" id="answer_useful" >
+                                    </button>
+                                    <span class="ask_content_count" id="answer_praise_num">{{answer.answer_praise_num}}</span>
+                                    <button class="ask_content_useless" type="button" title="反对" id="answer_useless">
+                                    </button>
+
+                                </div>
+                            </div>
+                            <a href="{% url 'answer_detail' question_title=question.question_title  index=answer.pk %}" id="current_answer">
+                            <div class="every_answer_right">
+                                <div class="every_answer_content"><div class="every_answer_content_detail">{{answer.answer|safe}}</div></div>
+                                <div class="every_answer_info">
+                                        <div class="every_answer_time">{{ answer.answer_time }}回答</div>
+                                        <div class="every_answer_author">{{ answer.answerer|safe }}</div>
+                                </div>
+                            </div>
+                            <div style="clear:both;"></div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="answer_result">
+                <div class="answer_result_text">我来回答</div>
+                <form method="POST" class="write_blog">
+                    {% csrf_token %}
+                    {{ answer_form.answer }}
+                    <button type="submit" class="save btn btn-default">提交答案</button>
+                </form>
+            </div>
+        </div>
+        <div class="ask_content_right">
+
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+
+
+{% endblock %}
+
